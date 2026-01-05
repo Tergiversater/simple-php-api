@@ -1,0 +1,57 @@
+<?php
+
+# Debud mode
+
+$api_debug['devapi'] = true;
+$api_debug['Errors'] = true;
+$api_debug['Timer']  = true;
+$api_debug['NoJSON'] = false;
+$api_debug['Log']    = true;
+
+# Default settings
+
+$api_json_pretty     = true;
+$api_name            = 'Test';
+$api_db              = 'DUAL';
+$api_upd_field       = 'SYS_UPDATE_DATE';
+$api_upd_suffix      = '_PART';
+#$api_filter_field    = '_id';
+$api_filter_field    = '"guid"';
+
+
+# VafidateFieldType
+
+$strong_float = false;
+
+# Available GET parameters
+
+#api_get_param['get_param'] = array('type,mode,limits','default','list accepted values');
+$api_get_param['mode']        = array('str','full','full,partial');
+$api_get_param['from']        = array('int,abs,nz',86400);
+$api_get_param['number']      = array('int,abs,nz',0);
+$api_get_param['pageSize']    = array('int,abs,nz,max:1000',100);
+$api_get_param['pageIndex']   = array('int,abs,nz',1);
+
+
+# Available Features
+
+#$api_use_param['Feature']    = array('Default','Value list','Use get param list');
+$api_use_param['Model']       = array('Fill_Answer_Default');
+$api_use_param['Preparation'] = array(false);
+$api_use_param['Paged']       = array(false, NULL, 'pageSize,PageIndex');
+$api_use_param['Partial']     = array(false, NULL, 'mode,from');
+$api_use_param['PickOne']     = array(false, NULL, 'number');
+
+
+# Available POST Option
+
+#$api_post_param['Option']         = array ('type','default','list accepted values');
+$api_post_param['json_example']    = array ('str','{}');
+$api_post_param['required_fields'] = array ('array', []);
+$api_post_param['optional_fields'] = array ('array', []);
+$api_post_param['offtop_param']    = array ('str','clear','error,clear,ignore');
+
+
+
+
+?>

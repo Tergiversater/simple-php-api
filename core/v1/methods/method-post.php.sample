@@ -1,0 +1,48 @@
+<?php
+
+#is_POST = true;
+
+#$api_db='DUAL';
+#$api_name='Test,Test2,Test3';
+#$api_name_trunk = false;
+
+#$method_get['mode']        = false; 
+#$method_get['from']        = false; 
+#$method_get['number']      = false; 
+#$method_get['pageSize']    = false;
+#$method_get['pageIndex']   = false;
+
+
+#$method_use['Model']       = 'Fill_Answer_Default'; # Custom function name
+#$method_use['Preparation'] = false;
+#$method_use['Paged']       = false;
+#$method_use['Partial']     = false;
+
+
+/*
+function Fill_Answer ($row,$i) 
+{
+        global $ans, $api_name;
+
+        foreach ($row as $key => $item){
+            if (substr($item,0,7)<>'array::'){
+                $ans[$api_name][$i][$key] = $item;
+            }else{
+                $tmp_a=explode('::',$item);
+
+                if (count($tmp_a)==3){
+                    $tmp_k=explode(',',$tmp_a[1]);
+                    $tmp_v=explode(',',$tmp_a[2]);
+
+                    for ($j =0 ; $j < count($tmp_k); $j++){
+                        $ans[$api_name][$i][$key][$tmp_k[$j]] = $tmp_v[$j];
+                    }
+                }else{
+                    $ans[$api_name][$i][$key]=array();
+                }
+            }
+        }
+}
+*/
+
+?>

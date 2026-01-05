@@ -1,0 +1,12 @@
+<?php
+
+# Database connection parameters
+
+$DB_USER='user';
+$DB_PASSWORD='password';
+$DB_SERVER='192.168.1.1';
+$DB_NAME='ORCL';
+$DB_ENCODING='UTF8';
+
+
+?>
