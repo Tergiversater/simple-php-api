@@ -1,0 +1,58 @@
+server {
+
+        root /var/www/api/core;
+
+
+        access_log /var/log/nginx/api.access.log combined if=$loggable;
+        error_log /var/log/nginx/api.error.log warn;
+
+        index index.html index.htm index.nginx-debian.html;
+
+        #edit servername
+        server_name api.mysite.com;
+
+        index index.php;
+
+        location / {
+                try_files $uri $uri.html $uri/ @extensionless-php;
+                index index.php;
+        }
+
+        location ~* ^/.+$ {     # all URLS
+
+            fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+
+            fastcgi_buffer_size 64k;
+            fastcgi_buffers 16 64k;
+            fastcgi_busy_buffers_size 128k;
+
+            include /etc/nginx/fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME  /var/www/api/core/index.php;
+            fastcgi_param  QUERY_STRING url=$fastcgi_script_name&$query_string;
+        }
+
+
+        location ~ \.(php|html)$ {
+                include snippets/fastcgi-php.conf;
+                fastcgi_pass unix:/run/php/php8.1-fpm.sock;
+        }
+
+
+        location @extensionless-php {
+                rewrite ^(.*)$ $1.php last;
+        }
+
+
+
+
+        #your ssl conf
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/api.mysite.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/api.mysite.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+
+}
