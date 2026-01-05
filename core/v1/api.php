@@ -218,5 +218,5 @@
 
 
     Answer($ans);
-    $db_close();
+    @db_close();
 ?>
