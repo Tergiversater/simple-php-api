@@ -23,14 +23,14 @@ $api_filter_field    = '"guid"';
 
 $strong_float = false;
 
-# Available GET parameters
-
-#api_get_param['get_param'] = array('type,mode,limits','default','list accepted values');
-$api_get_param['mode']        = array('str','full','full,partial');
-$api_get_param['from']        = array('int,abs,nz',86400);
-$api_get_param['number']      = array('int,abs,nz',0);
-$api_get_param['pageSize']    = array('int,abs,nz,max:1000',100);
-$api_get_param['pageIndex']   = array('int,abs,nz',1);
+# GET parameter plugins
+# The array order defines plugin loading and execution order.
+# Set a plugin to false to disable it for the whole API installation.
+$api_plugins['get_parameters'] = array(
+    'get-parameters/mode.php'   => true,
+    'get-parameters/number.php' => true,
+    'get-parameters/page.php'   => true
+);
 
 
 # Available Features
