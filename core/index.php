@@ -4,6 +4,9 @@
     $script_path .= '/../include/';
     set_include_path(get_include_path() . PATH_SEPARATOR . $script_path);
 
+    $plugin_path=realpath(dirname(__FILE__).'/../plugins/');
+    set_include_path(get_include_path() . PATH_SEPARATOR . $plugin_path);
+
 
     include_once('settings.php');
     include_once('answer.php');

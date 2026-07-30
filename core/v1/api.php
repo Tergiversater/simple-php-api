@@ -35,7 +35,9 @@
 
     $sql_filter = array();
 
-    foreach ($api_get_param as $key => $item) {
+    include_once(realpath(dirname(__FILE__).'/../../plugins/core.php'));
+
+    foreach ($api_get_param ?? array() as $key => $item) {
         $api_get[$key] = false;
         $method_get[$key] = false;
     }
@@ -62,7 +64,7 @@
         }
     }
 
-    include_once('get_parameters.php');
+    RunApiPluginHook('read_request');
 
     foreach ($method_use as $key => $item){
         if (isset($item[2])){
@@ -71,10 +73,6 @@
                 $method_get[$tmp_i] = true;
             }
         }
-    }
-
-    if ($method_use['Paged']){
-            $ans_total=true;
     }
 
     if (isset($api_debug['Timer'])){
@@ -87,32 +85,7 @@
     $ans=array();
 
     if (!$is_POST){
-
-        if ($method_use['Partial']){
-            $can_part = Is_Field_Set($api_db,$api_upd_field);
-        }
-        if (!$can_part or $api_get['mode']!='partial'){
-            $api_get['from'] = 0; 
-        }else{
-            $sql_filter[]=$api_upd_field.'>= (sysdate-'.$api_get['from'].'/(24*3600)) ';
-            #(sysdate()-v_TIME / (24*3600))
-        }
-
-        if ($method_use['Preparation'] and !($api_get['number']>0)) {
-            $prepare = true;
-            if ($api_get['pageIndex'] == 1) {
-                $prepare = PrepareTable ($api_db,$api_get['from'],$api_upd_suffix);
-            }
-            if ($prepare) {
-                $api_db_prev = $api_db;
-                $api_db = ($api_get['from']>0)?'SYS_'.$api_db.$api_upd_suffix:'SYS_'.$api_db;
-            }
-        }
-
-        if ($method_use['PickOne'] and $api_get['number']>0){
-            $sql_filter[] = $api_filter_field.'='.$api_get['number']; 
-        }
-
+        RunApiPluginHook('prepare');
 
         $_filter='';
         foreach ($sql_filter as $fltr_item){
@@ -124,24 +97,10 @@
         }
 
 
-        if ($ans_total){
-            $sql_count = get_sql_count($api_db, $_filter);
-            $page_total = ceil($sql_count / $api_get['pageSize']);
-
-            if ($page_total<$api_get['pageIndex']) {
-                $api_get['pageIndex']=$page_total;
-            }
-
-        }
+        RunApiPluginHook('before_query');
 
         $sql = 'SELECT * FROM '.$api_db.$_filter;
-
-        if ($ans_total){
-            $offset = ($api_get['pageIndex'] -1) * $api_get['pageSize'];
-            $limit = $api_get['pageSize'] + $offset;
-
-            $sql = "SELECT * FROM (SELECT t.* , rownum AS sys_rnum FROM (".$sql.") t WHERE rownum <= ".$limit.") WHERE sys_rnum > ".$offset;
-        }
+        RunApiPluginHook('wrap_query');
 
 
         $STID = oci_parse($CONN, $sql);
@@ -161,11 +120,7 @@
         }
 
 
-        if ($ans_total>0){
-            $ans['total_pages'] = $page_total;
-            $ans['page_number'] = $api_get['pageIndex'];
-            $ans['last']=!($ans['page_number']<$ans['total_pages']);
-        }
+        RunApiPluginHook('answer');
 
         if ($timer>0){
             $a['Used Time'] = microtime(true) - $timer;

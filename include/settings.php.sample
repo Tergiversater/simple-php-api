@@ -23,14 +23,15 @@ $api_filter_field    = '"guid"';
 
 $strong_float = false;
 
-# Available GET parameters
-
-#api_get_param['get_param'] = array('type,mode,limits','default','list accepted values');
-$api_get_param['mode']        = array('str','full','full,partial');
-$api_get_param['from']        = array('int,abs,nz',86400);
-$api_get_param['number']      = array('int,abs,nz',0);
-$api_get_param['pageSize']    = array('int,abs,nz,max:1000',100);
-$api_get_param['pageIndex']   = array('int,abs,nz',1);
+# Plugins and their optional modules
+# The first-level key is also the plugin directory name. A plugin core is
+# loaded automatically when at least one of its modules is enabled.
+# Array order defines module loading and execution order.
+$api_plugins['get-parameters'] = array(
+    'mode'   => true,
+    'number' => true,
+    'page'   => true
+);
 
 
 # Available Features
