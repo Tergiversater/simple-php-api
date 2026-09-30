@@ -1,7 +1,7 @@
 <?php
 
 $api_get_plugins = array();
-$api_get_param = array();
+$api_get_param = $api_get_param ?? array();
 
 function RegisterGetParameterPlugin($name, $definition)
 {
@@ -20,7 +20,13 @@ function LoadGetParameterModules($modules)
             if (!preg_match('/^[a-zA-Z0-9_-]+$/', $module)) {
                 Error('Wrong GET parameter module name: '.$module);
             }
-            include_once('get-parameters/'.$module.'.php');
+
+            $module_file = stream_resolve_include_path('get-parameters/'.$module.'.php');
+            if ($module_file === false) {
+                Error('GET parameter module not found: '.$module);
+            }
+
+            include_once($module_file);
         }
     }
 }
