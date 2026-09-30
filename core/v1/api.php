@@ -35,14 +35,9 @@
 
     $sql_filter = array();
 
-    include_once('get-parameters/core.php');
-    LoadGetParameterPlugins($api_plugins['get_parameters'] ?? array(
-        'get-parameters/mode.php' => true,
-        'get-parameters/number.php' => true,
-        'get-parameters/page.php' => true
-    ));
+    include_once(realpath(dirname(__FILE__).'/../../plugins/core.php'));
 
-    foreach ($api_get_param as $key => $item) {
+    foreach ($api_get_param ?? array() as $key => $item) {
         $api_get[$key] = false;
         $method_get[$key] = false;
     }
@@ -69,7 +64,7 @@
         }
     }
 
-    ReadGetParameters();
+    RunApiPluginHook('read_request');
 
     foreach ($method_use as $key => $item){
         if (isset($item[2])){
@@ -90,7 +85,7 @@
     $ans=array();
 
     if (!$is_POST){
-        RunGetParameterPluginHook('prepare');
+        RunApiPluginHook('prepare');
 
         $_filter='';
         foreach ($sql_filter as $fltr_item){
@@ -102,10 +97,10 @@
         }
 
 
-        RunGetParameterPluginHook('before_query');
+        RunApiPluginHook('before_query');
 
         $sql = 'SELECT * FROM '.$api_db.$_filter;
-        RunGetParameterPluginHook('wrap_query');
+        RunApiPluginHook('wrap_query');
 
 
         $STID = oci_parse($CONN, $sql);
@@ -125,7 +120,7 @@
         }
 
 
-        RunGetParameterPluginHook('answer');
+        RunApiPluginHook('answer');
 
         if ($timer>0){
             $a['Used Time'] = microtime(true) - $timer;

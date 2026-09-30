@@ -23,13 +23,14 @@ $api_filter_field    = '"guid"';
 
 $strong_float = false;
 
-# GET parameter plugins
-# The array order defines plugin loading and execution order.
-# Set a plugin to false to disable it for the whole API installation.
-$api_plugins['get_parameters'] = array(
-    'get-parameters/mode.php'   => true,
-    'get-parameters/number.php' => true,
-    'get-parameters/page.php'   => true
+# Plugins and their optional modules
+# The first-level key is also the plugin directory name. A plugin core is
+# loaded automatically when at least one of its modules is enabled.
+# Array order defines module loading and execution order.
+$api_plugins['get-parameters'] = array(
+    'mode'   => true,
+    'number' => true,
+    'page'   => true
 );
 
 

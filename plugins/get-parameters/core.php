@@ -1,7 +1,7 @@
 <?php
 
 $api_get_plugins = array();
-$api_get_param = array();
+$api_get_param = $api_get_param ?? array();
 
 function RegisterGetParameterPlugin($name, $definition)
 {
@@ -13,11 +13,20 @@ function RegisterGetParameterPlugin($name, $definition)
     }
 }
 
-function LoadGetParameterPlugins($plugins)
+function LoadGetParameterModules($modules)
 {
-    foreach ($plugins as $file => $enabled) {
+    foreach ($modules as $module => $enabled) {
         if ($enabled) {
-            include_once($file);
+            if (!preg_match('/^[a-zA-Z0-9_-]+$/', $module)) {
+                Error('Wrong GET parameter module name: '.$module);
+            }
+
+            $module_file = stream_resolve_include_path('get-parameters/'.$module.'.php');
+            if ($module_file === false) {
+                Error('GET parameter module not found: '.$module);
+            }
+
+            include_once($module_file);
         }
     }
 }
@@ -74,5 +83,32 @@ function RunGetParameterPluginHook($hook)
         }
     }
 }
+
+function PrepareGetParameterPlugins()
+{
+    RunGetParameterPluginHook('prepare');
+}
+
+function BeforeQueryGetParameterPlugins()
+{
+    RunGetParameterPluginHook('before_query');
+}
+
+function WrapQueryGetParameterPlugins()
+{
+    RunGetParameterPluginHook('wrap_query');
+}
+
+function AddAnswerGetParameterPlugins()
+{
+    RunGetParameterPluginHook('answer');
+}
+
+LoadGetParameterModules($api_plugins['get-parameters']);
+RegisterApiPluginHook('read_request', 'ReadGetParameters');
+RegisterApiPluginHook('prepare', 'PrepareGetParameterPlugins');
+RegisterApiPluginHook('before_query', 'BeforeQueryGetParameterPlugins');
+RegisterApiPluginHook('wrap_query', 'WrapQueryGetParameterPlugins');
+RegisterApiPluginHook('answer', 'AddAnswerGetParameterPlugins');
 
 ?>
