@@ -19,6 +19,16 @@ function RunApiPluginHook($hook)
     }
 }
 
+if (!isset($api_plugins) && isset($api_get_param)) {
+    $api_plugins = array(
+        'get-parameters' => array(
+            'mode' => true,
+            'number' => true,
+            'page' => true
+        )
+    );
+}
+
 foreach ($api_plugins ?? array() as $plugin => $modules) {
     if (!is_array($modules) || !in_array(true, $modules, true)) {
         continue;
